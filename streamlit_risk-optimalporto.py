@@ -209,7 +209,7 @@ if uploaded_file:
             st.markdown(f"""
             **Expected Return (Rata-rata Imbal Hasil Harian):** {opt_return:.2%}  
             > Ini adalah estimasi keuntungan rata-rata *harian* dari portofolio Anda.  
-            > Berdasarkan data historis, potensi keuntungan dalam setahun diperkirakan sekitar **{annualized_return:.2f}%**, dengan asumsi pola return harian berlanjut sepanjang tahun.
+            > Berdasarkan data historis, potensi keuntungan dalam setahun diperkirakan sekitar **{annualized_return * 100:.2f}%**, dengan asumsi pola return harian berlanjut sepanjang tahun.
 
             **Volatility (Tingkat Risiko / Fluktuasi):** {opt_volatility:.2%}  
             > Semakin tinggi angkanya, semakin besar kemungkinan nilai portofolio Anda naik turun.  
