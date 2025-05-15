@@ -199,6 +199,7 @@ if uploaded_file:
             opt_weights = opt_result.x
 
             opt_return = np.sum(mean_returns * opt_weights)
+            annualized_return = opt_return * 252
             opt_volatility = np.sqrt(np.dot(opt_weights.T, np.dot(cov_matrix, opt_weights)))
 
             st.write("### Alokasi Aset Optimal")
@@ -206,9 +207,9 @@ if uploaded_file:
                 st.write(f"{ticker}: {weight:.2%}")
 
             st.markdown(f"""
-            **Expected Return (Rata-rata Imbal Hasil):** {opt_return:.2%}  
-            > Ini adalah estimasi keuntungan rata-rata dari portofolio Anda berdasarkan data historis.  
-            > Misalnya, jika nilainya 12%, maka potensi keuntungan dalam setahun diperkirakan sekitar 12%.
+            **Expected Return (Rata-rata Imbal Hasil Harian):** {opt_return:.2%}  
+            > Ini adalah estimasi keuntungan rata-rata *harian* dari portofolio Anda.  
+            > Berdasarkan data historis, potensi keuntungan dalam setahun diperkirakan sekitar **{annualized_return:.2f}%**, dengan asumsi pola return harian berlanjut sepanjang tahun.
 
             **Volatility (Tingkat Risiko / Fluktuasi):** {opt_volatility:.2%}  
             > Semakin tinggi angkanya, semakin besar kemungkinan nilai portofolio Anda naik turun.  
