@@ -200,10 +200,21 @@ if uploaded_file:
             st.subheader("🎯 Optimasi Portofolio Berdasarkan Return yang Diinginkan")
             min_ret = results_df["Return"].min()
             max_ret = results_df["Return"].max()
+
+            # Jika min_ret dan max_ret terlalu dekat atau sama, buat range buatan agar slider tetap aktif
+            if round(min_ret * 100, 2) == round(max_ret * 100, 2):
+                st.warning("Rentang return terlalu sempit. Slider diatur ke default range.")
+                slider_min = round(min_ret * 100, 2) - 5
+                slider_max = round(max_ret * 100, 2) + 5
+            else:
+                slider_min = round(min_ret * 100, 2)
+                slider_max = round(max_ret * 100, 2)
+
             target_return = st.slider("Tentukan expected return tahunan yang diinginkan (%):",
-                                      round(min_ret * 100, 2),
-                                      round(max_ret * 100, 2),
-                                      15.00) / 100
+                                      slider_min,
+                                      slider_max,
+                                      slider_min + (slider_max - slider_min) / 2) / 100
+
 
             def portfolio_performance(weights, mean_returns, cov_matrix):
                 returns = np.sum(weights * mean_returns) * 252
