@@ -157,65 +157,89 @@ if uploaded_file:
             ax.set_ylabel("Harga Ternormalisasi")
             st.pyplot(fig)
 
-            mean_returns = returns.mean()
-            cov_matrix = returns.cov()
+            log_returns_df = np.log(filtered_df[selected_tickers] / filtered_df[selected_tickers].shift(1)).dropna()
+            mean_returns = log_returns_df.mean()
+            cov_matrix = log_returns_df.cov()
 
-            st.subheader("Simulasi Random Portfolio")
-            st.markdown("Menampilkan kombinasi alokasi aset acak dengan risiko dan return yang berbeda-beda.")
-            num_portfolios = 5000
+            st.subheader("🎯 Simulasi Portofolio Acak & Efficient Frontier")
+            num_portfolios = 10000
             results = np.zeros((3, num_portfolios))
-            weights_record = []
+            weight_array = []
 
             for i in range(num_portfolios):
                 weights = np.random.random(len(selected_tickers))
                 weights /= np.sum(weights)
-                weights_record.append(weights)
+                weight_array.append(weights)
 
-                port_return = np.sum(mean_returns * weights)
-                port_stddev = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
+                portfolio_return = np.sum(mean_returns * weights) * 252
+                portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 252, weights)))
+                sharpe_ratio = portfolio_return / portfolio_volatility
 
-                results[0,i] = port_stddev
-                results[1,i] = port_return
-                results[2,i] = (port_return / port_stddev)
+                results[0, i] = portfolio_return
+                results[1, i] = portfolio_volatility
+                results[2, i] = sharpe_ratio
 
-            fig, ax = plt.subplots(figsize=(10,6))
-            scatter = ax.scatter(results[0,:], results[1,:], c=results[2,:], cmap='viridis', marker='o')
-            ax.set_xlabel('Volatilitas')
-            ax.set_ylabel('Return')
-            ax.set_title('Simulasi Portofolio Acak')
-            st.pyplot(fig)
+            results_df = pd.DataFrame(results.T, columns=["Return", "Volatility", "Sharpe Ratio"])
+            weights_df = pd.DataFrame(weight_array, columns=selected_tickers)
 
-            st.subheader("Portofolio Optimal (Mean-Variance)")
-            st.markdown("Menampilkan kombinasi aset terbaik dengan rasio return terhadap risiko yang dimiliki.")
-            def neg_sharpe(weights):
-                ret = np.sum(mean_returns * weights)
-                vol = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
-                return -ret / vol
+            max_sharpe_idx = results_df["Sharpe Ratio"].idxmax()
+            min_vol_idx = results_df["Volatility"].idxmin()
 
-            constraints = ({'type': 'eq', 'fun': lambda x: np.sum(x) - 1})
-            bounds = tuple((0, 1) for _ in selected_tickers)
-            initial_guess = len(selected_tickers) * [1. / len(selected_tickers)]
+            fig2, ax2 = plt.subplots(figsize=(10, 6))
+            scatter = ax2.scatter(results_df["Volatility"], results_df["Return"], c=results_df["Sharpe Ratio"], cmap='viridis', alpha=0.7)
+            ax2.scatter(results_df.loc[max_sharpe_idx, "Volatility"], results_df.loc[max_sharpe_idx, "Return"], 
+                        marker='*', color='r', s=200, label='Max Sharpe Ratio')
+            ax2.scatter(results_df.loc[min_vol_idx, "Volatility"], results_df.loc[min_vol_idx, "Return"], 
+                        marker='*', color='b', s=200, label='Min Volatility')
+            ax2.set_xlabel("Volatility (Risk)")
+            ax2.set_ylabel("Expected Return (Annual)")
+            ax2.set_title("Efficient Frontier")
+            ax2.legend()
+            plt.colorbar(scatter, label='Sharpe Ratio')
+            st.pyplot(fig2)
 
-            opt_result = minimize(neg_sharpe, initial_guess, method='SLSQP', bounds=bounds, constraints=constraints)
-            opt_weights = opt_result.x
+            st.subheader("🎯 Optimasi Portofolio Berdasarkan Return yang Diinginkan")
+            min_ret = results_df["Return"].min()
+            max_ret = results_df["Return"].max()
+            target_return = st.slider("Tentukan expected return tahunan yang diinginkan (%):",
+                                      round(min_ret * 100, 2),
+                                      round(max_ret * 100, 2),
+                                      15.00) / 100
 
-            opt_return = np.sum(mean_returns * opt_weights)
-            annualized_return = opt_return * 252
-            opt_volatility = np.sqrt(np.dot(opt_weights.T, np.dot(cov_matrix, opt_weights)))
+            def portfolio_performance(weights, mean_returns, cov_matrix):
+                returns = np.sum(weights * mean_returns) * 252
+                volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 252, weights)))
+                return returns, volatility
 
-            st.write("### Alokasi Aset Optimal")
-            for ticker, weight in zip(selected_tickers, opt_weights):
-                st.write(f"{ticker}: {weight:.2%}")
+            def min_variance(weights, mean_returns, cov_matrix, target_return):
+                return portfolio_performance(weights, mean_returns, cov_matrix)[1]
 
-            st.markdown(f"""
-            **Expected Return (Rata-rata Imbal Hasil Harian):** {opt_return:.2%}  
-            > Ini adalah estimasi keuntungan rata-rata *harian* dari portofolio Anda.  
-            > Berdasarkan data historis, potensi keuntungan dalam setahun diperkirakan sekitar **{annualized_return * 100:.2f}%**, dengan asumsi pola return harian berlanjut sepanjang tahun.
+            def constraint_return(weights, mean_returns, target):
+                return np.sum(weights * mean_returns) * 252 - target
 
-            **Volatility (Tingkat Risiko / Fluktuasi):** {opt_volatility:.2%}  
-            > Semakin tinggi angkanya, semakin besar kemungkinan nilai portofolio Anda naik turun.  
-            > Volatilitas mewakili ketidakpastian atau risiko pergerakan harga.
-            """)
+            num_assets = len(selected_tickers)
+            initial_guess = num_assets * [1. / num_assets, ]
+            args = (mean_returns, cov_matrix, target_return)
+            constraints = (
+                {'type': 'eq', 'fun': constraint_return, 'args': (mean_returns, target_return)},
+                {'type': 'eq', 'fun': lambda x: np.sum(x) - 1}
+            )
+            bounds = tuple((0, 1) for _ in range(num_assets))
+
+            optimized = minimize(min_variance, initial_guess, args=args,
+                                 method='SLSQP', bounds=bounds, constraints=constraints)
+
+            opt_weights = optimized.x
+            opt_return, opt_volatility = portfolio_performance(opt_weights, mean_returns, cov_matrix)
+
+            st.write(f"📌 **Expected Return**: {opt_return*100:.2f}% per tahun")
+            st.write(f"📌 **Expected Volatility (Risk)**: {opt_volatility*100:.2f}%")
+
+            allocation_df = pd.DataFrame({
+                "Aset": selected_tickers,
+                "Bobot Optimal (%)": np.round(opt_weights * 100, 2)
+            })
+            st.dataframe(allocation_df)
 
 
     # Feedback
