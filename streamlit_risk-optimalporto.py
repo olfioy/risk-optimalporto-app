@@ -6,12 +6,12 @@ import seaborn as sns
 from io import BytesIO
 from scipy.optimize import minimize
 
-st.set_page_config(page_title="Aplikasi Evaluasi Risiko Investasi", layout="wide")
-st.title("\U0001F4C8 Aplikasi Evaluasi Risiko & Portofolio Optimal Investasi")
+st.set_page_config(page_title="PortoRisk", layout="wide")
+st.title("\U0001F4C8 PortoRisk - Aplikasi Evaluasi Risiko & Optimasi Portofolio Investasi")
 
 st.markdown("""
 Aplikasi ini membantu Anda memahami risiko dan strategi alokasi portofolio untuk berbagai aset investasi (seperti saham dan lainnya).  
-Fitur: visualisasi korelasi, simulasi risiko (VaR), serta optimasi portofolio berdasarkan return dan risiko.
+Fitur: visualisasi korelasi, simulasi risiko (Value at Risk), serta optimasi portofolio berdasarkan return dan risiko.
 """)
 
 # 1. Upload Excel File
@@ -41,9 +41,8 @@ if uploaded_file:
     if len(selected_tickers) >= 2:
         # 3. Pilih Tanggal
         st.header("3. Pilih Rentang Tanggal")
-        st.markdown("Pilih rentang tanggal yang ingin dievaluasi:")
         min_date, max_date = dates.min(), dates.max()
-        selected_date_range = st.date_input("Pilih rentang tanggal:", [min_date, max_date], min_value=min_date, max_value=max_date)
+        selected_date_range = st.date_input("Pilih rentang tanggal yang ingin dievaluasi:", [min_date, max_date], min_value=min_date, max_value=max_date)
 
         if len(selected_date_range) == 2:
             start_date, end_date = selected_date_range
