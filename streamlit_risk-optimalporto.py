@@ -11,8 +11,8 @@ st.title("\U0001F4C8 PortoRisk - Aplikasi Evaluasi Risiko & Optimasi Portofolio 
 
 st.markdown("""
 Aplikasi ini membantu Anda memahami risiko dan strategi alokasi portofolio untuk berbagai aset investasi (seperti saham dan lainnya).  
-Fitur: visualisasi korelasi, simulasi risiko (Value at Risk), serta optimasi portofolio berdasarkan return dan risiko.
-**Penting:** Aplikasi ini **tidak dimaksudkan sebagai alat prediksi masa depan** maupun **saran investasi**. Seluruh hasil simulasi dan analisis bersifat historis dan edukatif.
+Fitur yang ada meliputi visualisasi korelasi, simulasi risiko (Value at Risk), serta optimasi portofolio berdasarkan return dan risiko.
+Aplikasi ini **tidak dimaksudkan sebagai alat prediksi masa depan** maupun **saran investasi**. Seluruh hasil simulasi dan analisis bersifat historis dan edukatif.
 Anda disarankan untuk tetap melakukan riset dan konsultasi secara mandiri **(Do Your Own Research)** sebelum membuat keputusan investasi apa pun.
 """)
 
