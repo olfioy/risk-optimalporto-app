@@ -38,7 +38,7 @@ if uploaded_file:
 
     # 2. Pilih Aset
     st.header("2. Pilih Aset untuk Dievaluasi")
-    selected_tickers = st.multiselect("Pilih aset (minimal 2):", tickers, default=tickers[:2])
+    selected_tickers = st.multiselect("Pilih aset (minimal 2):", tickers, default=tickers[:6])
 
     if len(selected_tickers) >= 2:
         # 3. Pilih Tanggal
