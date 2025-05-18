@@ -141,7 +141,6 @@ if uploaded_file:
             Portofolio optimal adalah kombinasi aset yang memberikan rasio imbal hasil terhadap risiko terbaik. Artinya, portofolio ini dirancang agar **imbal hasil (return) maksimal dibandingkan risiko yang diambil**. Perhitungan pada aplikasi ini didasarkan pada data historis, dan dihitung menggunakan metode Mean-Variance (Markowitz).
             """)
 
-
             st.subheader("Harga Mentah")
             st.markdown("Menampilkan harga asli dari masing-masing aset.")
             fig, ax = plt.subplots(figsize=(10, 4))
