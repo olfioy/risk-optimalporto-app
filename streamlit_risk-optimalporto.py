@@ -7,13 +7,28 @@ from io import BytesIO
 from scipy.optimize import minimize
 
 st.set_page_config(page_title="PortoRisk", layout="wide")
-st.title("\U0001F4C8 PortoRisk - Aplikasi Evaluasi Risiko & Optimasi Portofolio Investasi")
+# Ucapan selamat datang dan judul
+st.title("👋 Selamat Datang di PortoRisk")
+st.subheader("📊 Aplikasi Evaluasi Risiko & Optimasi Portofolio Investasi")
 
+# Penjelasan ringkas
+st.markdown("PortoRisk dirancang untuk membantu Anda memahami dan menganalisis portofolio investasi berdasarkan data historis.")
+
+# Fitur aplikasi dalam bentuk poin
+st.markdown("### 🔧 Fitur Utama:")
 st.markdown("""
-Aplikasi ini membantu Anda memahami risiko dan strategi alokasi portofolio untuk berbagai aset investasi (seperti saham dan lainnya).  
-Fitur yang ada meliputi visualisasi korelasi, simulasi risiko (Value at Risk), serta optimasi portofolio berdasarkan return dan risiko.
-Aplikasi ini **tidak dimaksudkan sebagai alat prediksi masa depan** maupun **saran investasi**. Seluruh hasil simulasi dan analisis bersifat historis dan edukatif.
-Anda disarankan untuk tetap melakukan riset dan konsultasi secara mandiri **(Do Your Own Research)** sebelum membuat keputusan investasi apa pun.
+- 🔗 **Visualisasi Korelasi Aset**  
+- ⚠️ **Simulasi Risiko (Value at Risk / VaR)**  
+- 📈 **Optimasi Portofolio Berdasarkan Return dan Risiko**
+""")
+
+# Disclaimer atau penafian
+st.markdown("---")
+st.markdown("⚠️ *Catatan:*")
+st.markdown("""
+- Aplikasi ini **bukan alat prediksi masa depan** maupun **saran keuangan profesional**.  
+- Seluruh hasil bersifat **edukatif** dan berdasarkan data historis.  
+- Selalu lakukan riset pribadi dan konsultasi sebelum mengambil keputusan investasi (**Do Your Own Research**).
 """)
 
 # 1. Upload Excel File
