@@ -160,9 +160,8 @@ if uploaded_file:
             mean_returns = log_returns_df.mean()
             cov_matrix = log_returns_df.cov()
 
-            st.subheader("🎯 Simulasi Portofolio Acak & Efficient Frontier")
             # === Simulasi Portofolio Acak & Efficient Frontier ===
-            st.subheader("🎯 Simulasi Portofolio Acak & Efficient Frontier")
+            st.subheader("Simulasi Portofolio Acak & Efficient Frontier")
 
             @st.cache_data
             def simulate_portfolios(mean_returns, cov_matrix, num_portfolios=10000):
