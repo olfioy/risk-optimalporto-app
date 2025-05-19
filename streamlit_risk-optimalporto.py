@@ -161,25 +161,30 @@ if uploaded_file:
             cov_matrix = log_returns_df.cov()
 
             st.subheader("🎯 Simulasi Portofolio Acak & Efficient Frontier")
-            num_portfolios = 10000
-            results = np.zeros((3, num_portfolios))
-            weight_array = []
+            @st.cache_data
+            def simulate_portfolios(mean_returns, cov_matrix, num_portfolios=10000):
+                results = np.zeros((3, num_portfolios))
+                weight_array = []
 
-            for i in range(num_portfolios):
-                weights = np.random.random(len(selected_tickers))
-                weights /= np.sum(weights)
-                weight_array.append(weights)
+                for i in range(num_portfolios):
+                    weights = np.random.random(len(mean_returns))
+                    weights /= np.sum(weights)
+                    weight_array.append(weights)
 
-                portfolio_return = np.sum(mean_returns * weights) * 252
-                portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 252, weights)))
-                sharpe_ratio = portfolio_return / portfolio_volatility
+                    portfolio_return = np.sum(mean_returns * weights) * 252
+                    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 252, weights)))
+                    sharpe_ratio = portfolio_return / portfolio_volatility
 
-                results[0, i] = portfolio_return
-                results[1, i] = portfolio_volatility
-                results[2, i] = sharpe_ratio
+                    results[0, i] = portfolio_return
+                    results[1, i] = portfolio_volatility
+                    results[2, i] = sharpe_ratio
 
+                return results, weight_array
+
+            results, weight_array = simulate_portfolios(mean_returns, cov_matrix)
             results_df = pd.DataFrame(results.T, columns=["Return", "Volatility", "Sharpe Ratio"])
             weights_df = pd.DataFrame(weight_array, columns=selected_tickers)
+
 
             max_sharpe_idx = results_df["Sharpe Ratio"].idxmax()
             min_vol_idx = results_df["Volatility"].idxmin()
@@ -187,7 +192,7 @@ if uploaded_file:
             fig2, ax2 = plt.subplots(figsize=(10, 6))
             scatter = ax2.scatter(results_df["Volatility"], results_df["Return"], c=results_df["Sharpe Ratio"], cmap='viridis', alpha=0.7)
             ax2.scatter(results_df.loc[max_sharpe_idx, "Volatility"], results_df.loc[max_sharpe_idx, "Return"], 
-                        marker='*', color='r', s=200, label='Max Sharpe Ratio')
+                        marker='*', color='ra', s=200, label='Max Sharpe Ratio')
             ax2.scatter(results_df.loc[min_vol_idx, "Volatility"], results_df.loc[min_vol_idx, "Return"], 
                         marker='*', color='b', s=200, label='Min Volatility')
             ax2.set_xlabel("Volatility (Risk)")
