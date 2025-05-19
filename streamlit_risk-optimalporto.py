@@ -275,8 +275,6 @@ if uploaded_file:
             else:
                 st.error("Data simulasi kosong atau tidak valid. Silakan pastikan data input memadai.")
 
-
-
     # Feedback
     st.markdown("---")
     st.markdown("💬 Beri komentar atau masukan aplikasi [di sini](https://tinyurl.com/FeedbackAppERPO-1234)")
