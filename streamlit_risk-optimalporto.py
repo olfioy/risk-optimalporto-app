@@ -223,8 +223,8 @@ if uploaded_file:
 
                 if round(min_ret * 100, 2) == round(max_ret * 100, 2):
                     st.warning("Rentang return terlalu sempit. Slider diatur ke default range.")
-                    slider_min = round(min_ret * 100, 2) - 5
-                    slider_max = round(max_ret * 100, 2) + 5
+                    slider_min = round(min_ret * 100, 2) - 10
+                    slider_max = round(max_ret * 100, 2) + 10
                 else:
                     slider_min = round(min_ret * 100, 2)
                     slider_max = round(max_ret * 100, 2)
@@ -232,7 +232,7 @@ if uploaded_file:
                 target_return = st.slider("Tentukan expected return tahunan yang diinginkan (%):",
                                           slider_min,
                                           slider_max,
-                                          slider_min + (slider_max - slider_min) / 2) / 100
+                                          slider_max + (slider_max - slider_min) / 2) / 100
 
                 # === Fungsi Optimasi Portofolio ===
                 def portfolio_performance(weights, mean_returns, cov_matrix):
