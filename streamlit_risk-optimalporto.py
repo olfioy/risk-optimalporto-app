@@ -232,7 +232,7 @@ if uploaded_file:
                 target_return = st.slider("Tentukan expected return tahunan yang diinginkan (%):",
                                           slider_min,
                                           slider_max,
-                                          slider_max + (slider_max - slider_min) / 2) / 100
+                                          0 / 100
 
                 # === Fungsi Optimasi Portofolio ===
                 def portfolio_performance(weights, mean_returns, cov_matrix):
