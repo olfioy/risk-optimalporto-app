@@ -89,12 +89,17 @@ if uploaded_file:
             min_pair = corr_values.stack().idxmin()
             max_pair = corr_values.stack().idxmax()
 
-            st.markdown(f"""
-            **Analisis Korelasi:**
+            # Tampilkan dalam kotak hijau
+            st.success(f"""
+            📊 **Analisis Korelasi:**
 
-            - Pasangan aset dengan korelasi **terendah**: **{min_pair[0]}** dan **{min_pair[1]}** dengan nilai korelasi **{min_corr:.2f}**.
-            - Pasangan aset dengan korelasi **tertinggi**: **{max_pair[0]}** dan **{max_pair[1]}** dengan nilai korelasi **{max_corr:.2f}**.
+            • Pasangan aset dengan korelasi **terendah**: **{min_pair[0]}** dan **{min_pair[1]}**
+              ➡️ Nilai korelasi: **{min_corr:.2f}**
+
+            • Pasangan aset dengan korelasi **tertinggi**: **{max_pair[0]}** dan **{max_pair[1]}**
+              ➡️ Nilai korelasi: **{max_corr:.2f}**
             """)
+
 
 
             # 5. Proyeksi VaR
