@@ -81,12 +81,34 @@ if uploaded_file:
             sns.heatmap(corr, annot=True, cmap="coolwarm", linewidths=0.5, ax=ax)
             st.pyplot(fig)
 
+            # Menemukan pasangan aset dengan korelasi tertinggi dan terendah
+            corr_values = corr.where(np.triu(np.ones(corr.shape), k=1).astype(bool))
+            min_corr = corr_values.min().min()
+            max_corr = corr_values.max().max()
+
+            min_pair = corr_values.stack().idxmin()
+            max_pair = corr_values.stack().idxmax()
+
+            st.markdown(f"""
+            **Analisis Korelasi:**
+
+            - Pasangan aset dengan korelasi **terendah**: **{min_pair[0]}** dan **{min_pair[1]}** dengan nilai korelasi **{min_corr:.2f}**.
+            - Pasangan aset dengan korelasi **tertinggi**: **{max_pair[0]}** dan **{max_pair[1]}** dengan nilai korelasi **{max_corr:.2f}**.
+            """)
+
+
             # 5. Proyeksi VaR
             st.header("5. Proyeksi dan Simulasi VaR (Value at Risk)")
             st.markdown("""
             Proyeksi & simulasi berikut ini membantu memperkirakan potensi kerugian di masa depan berdasarkan pergerakan historis harga dan simulasi acak (Geometric Brownian Motion). VaR 95% artinya ada 95% kemungkinan kerugian tidak melebihi nilai tertentu dalam jangka waktu yang dipilih.
             """)
-            projection_map = {"Mingguan (5 hari)": 5, "Bulanan (21 hari)": 21, "Tahunan (252 hari)": 252}
+            projection_map = {
+                "1 Bulan (21 hari)": 21,
+                "3 Bulan (63 hari)": 63,
+                "6 Bulan (126 hari)": 126,
+                "1 Tahun (252 hari)": 252
+            }
+
             horizon = st.selectbox("Pilih horizon proyeksi:", list(projection_map.keys()))
             forecast_days = projection_map[horizon]
 
@@ -176,7 +198,7 @@ if uploaded_file:
             cov_matrix = log_returns_df.cov()
 
             # === Simulasi Portofolio Acak & Efficient Frontier ===
-            st.subheader("Simulasi Portofolio Acak & Efficient Frontier")
+            st.subheader("Simulasi Portofolio Acak")
 
             @st.cache_data
             def simulate_portfolios(mean_returns, cov_matrix, num_portfolios=10000):
@@ -226,7 +248,7 @@ if uploaded_file:
 
                 ax2.set_xlabel("Volatility (Risk)")
                 ax2.set_ylabel("Expected Return (Annual)")
-                ax2.set_title("Efficient Frontier")
+                ax2.set_title("Random Portfolios")
                 ax2.legend()
                 plt.colorbar(scatter, label='Sharpe Ratio')
                 st.pyplot(fig2)
