@@ -108,6 +108,7 @@ if uploaded_file:
                 "1 Bulan (21 hari)": 21,
                 "3 Bulan (63 hari)": 63,
                 "6 Bulan (126 hari)": 126,
+                "236 hari": 236,
                 "1 Tahun (252 hari)": 252
             }
 
@@ -198,6 +199,14 @@ if uploaded_file:
             log_returns_df = np.log(filtered_df[selected_tickers] / filtered_df[selected_tickers].shift(1)).dropna()
             mean_returns = log_returns_df.mean()
             cov_matrix = log_returns_df.cov()
+
+            # Cek apakah jumlah data cukup untuk simulasi portofolio
+            if len(filtered_df) <= 235:
+                st.warning("⚠️ Data yang Anda pilih pada rentang tanggal hanya memiliki "
+                           f"{len(filtered_df)} data. Tambah rentang tanggal Anda agar portofolio dapat disimulasikan "
+                           "(minimal 236 data).")
+                st.stop()
+
 
             # === Simulasi Portofolio Acak & Efficient Frontier ===
             st.subheader("Simulasi Portofolio Acak")
