@@ -221,8 +221,8 @@ if uploaded_file:
                     weights /= np.sum(weights)
                     weight_array.append(weights)
 
-                    portfolio_return = np.sum(mean_returns * weights) * 252
-                    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 252, weights)))
+                    portfolio_return = np.sum(mean_returns * weights) * 236
+                    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 236, weights)))
                     sharpe_ratio = portfolio_return / portfolio_volatility if portfolio_volatility != 0 else 0
 
                     results[0, i] = portfolio_return
@@ -284,15 +284,15 @@ if uploaded_file:
 
                 # === Fungsi Optimasi Portofolio ===
                 def portfolio_performance(weights, mean_returns, cov_matrix):
-                    returns = np.sum(weights * mean_returns) * 252
-                    volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 252, weights)))
+                    returns = np.sum(weights * mean_returns) * 236
+                    volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 236, weights)))
                     return returns, volatility
 
                 def min_variance(weights, mean_returns, cov_matrix, target_return):
                     return portfolio_performance(weights, mean_returns, cov_matrix)[1]
 
                 def constraint_return(weights, mean_returns, target):
-                    return np.sum(weights * mean_returns) * 252 - target
+                    return np.sum(weights * mean_returns) * 236 - target
 
                 num_assets = len(selected_tickers)
                 initial_guess = num_assets * [1. / num_assets, ]
