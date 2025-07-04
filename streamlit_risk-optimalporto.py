@@ -188,7 +188,7 @@ if uploaded_file:
             ax.set_ylabel("Harga")
             st.pyplot(fig)
 
-            st.subheader("Harga Ternormalisasi")
+            st.subheader("Harga Relatif")
             st.markdown("Harga dinormalisasi agar mudah dibandingkan (semua dimulai dari angka 1).")
             norm_prices = filtered_df[selected_tickers] / filtered_df[selected_tickers].iloc[0]
             fig, ax = plt.subplots(figsize=(10, 4))
